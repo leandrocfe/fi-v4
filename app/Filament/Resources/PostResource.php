@@ -12,10 +12,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-    use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schema\Components\Section;
 use Filament\Schema\Components\Split;
+use Filament\Schema\Components\Utilities\Get;
+use Filament\Schema\Components\Utilities\Set;
 use Filament\Schema\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -50,11 +52,30 @@ class PostResource extends Resource
                                 $set('slug', slug($state))
                             JS),
 
+                        /*
+                        TextInput::make('title')
+                            ->live(onBlur: true)
+                            ->partiallyRenderComponentsAfterStateUpdated(['slug'])
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                $set('slug', str($state)->slug());
+                            }),
+
+                        TextInput::make('slug'),
+
+                        TextEntry::make('time')
+                            ->state(now()),
+                        */
+
                         RichEditor::make('content')
                             ->columnSpanFull(),
 
+                        Toggle::make('show_tags')
+                            ->live()
+                            ->formatStateUsing(fn () => true),
+
                         TagsInput::make('tags')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->visible(fn (Get $get): bool => $get('show_tags')),
                     ]),
                     Section::make([
 
@@ -67,7 +88,7 @@ class PostResource extends Resource
                         Toggle::make('published'),
 
                         DateTimePicker::make('published_at')
-                        ->visibleJs(<<<'JS'
+                            ->visibleJs(<<<'JS'
                             $get('published')
                         JS),
                     ])
@@ -80,7 +101,7 @@ class PostResource extends Resource
     public static function infolist(Schema $infolist): Schema
     {
         return $infolist->schema([
-            TextEntry::make('title')
+            TextEntry::make('title'),
         ]);
     }
 

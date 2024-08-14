@@ -1,0 +1,20 @@
+created:
+    - database/factories/PostFactory.php
+    - database/factories/CategoryFactory.php
+    - database/factories/CommentFactory.php
+    - database/migrations/2024_08_14_000413_create_posts_table.php
+    - database/migrations/2024_08_14_000414_create_categories_table.php
+    - database/migrations/2024_08_14_000415_create_comments_table.php
+    - database/migrations/2024_08_14_000416_create_category_post_table.php
+    - app/Models/Post.php
+    - app/Models/Category.php
+    - app/Models/Comment.php
+    - database/seeders/UserSeeder.php
+    - database/seeders/PostSeeder.php
+    - database/seeders/CategorySeeder.php
+    - database/seeders/CommentSeeder.php
+models:
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string nullable' }
+    Post: { title: string, slug: string, content: 'longtext nullable', image: 'string nullable', tags: 'json nullable', published: 'boolean default:false', published_at: 'datetime nullable', relationships: { belongsToMany: Category, belongsTo: User, hasMany: Comment } }
+    Category: { name: string, slug: string, content: 'longtext nullable', published: 'boolean default:false', published_at: 'datetime nullable', relationships: { belongsToMany: Post } }
+    Comment: { title: string, content: 'longtext nullable', published: 'boolean default:false', published_at: 'datetime nullable', relationships: { belongsTo: 'Post, User' } }

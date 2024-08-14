@@ -1,0 +1,29 @@
+models:
+  Post:
+    title: string
+    slug: string
+    content: longtext nullable
+    image: string nullable
+    tags: json nullable
+    published: boolean default:false
+    published_at: datetime nullable
+    relationships:
+      belongsToMany: Category
+      belongsTo: User
+      hasMany: Comment
+  Category:
+    name: string
+    slug: string
+    content: longtext nullable
+    published: boolean default:false
+    published_at: datetime nullable
+    relationships:
+      belongsToMany: Post
+  Comment:
+    title: string
+    content: longtext nullable
+    published: boolean default:false
+    published_at: datetime nullable
+    relationships:
+      belongsTo: Post, User
+seeders: User, Post, Category, Comment

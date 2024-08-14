@@ -5,7 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
 use Filament\Actions;
-use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+    use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schema\Components\Section;
 use Filament\Schema\Components\Split;
@@ -26,28 +33,55 @@ class PostResource extends Resource
             ->schema([
                 Split::make([
                     Section::make([
-                        Forms\Components\TextInput::make('title')
-                            ->required(),
-                        Forms\Components\TextInput::make('slug')
-                            ->required(),
-                        Forms\Components\RichEditor::make('content')
+
+                        TextEntry::make('Instructions')
+                            ->state('Numquam recusandae dolor suscipit libero dolorem.')
+                            ->color('primary'),
+
+                        TextInput::make('title')
+                            ->required()
+                            ->afterStateUpdatedJs(<<<'JS'
+                                $set('slug', slug($state))
+                            JS),
+
+                        TextInput::make('slug')
+                            ->required()
+                            ->afterStateUpdatedJs(<<<'JS'
+                                $set('slug', slug($state))
+                            JS),
+
+                        RichEditor::make('content')
                             ->columnSpanFull(),
-                        Forms\Components\TagsInput::make('tags')
+
+                        TagsInput::make('tags')
                             ->columnSpanFull(),
                     ]),
                     Section::make([
-                        Forms\Components\Select::make('user_id')
+
+                        Select::make('user_id')
                             ->relationship('user', 'name')
                             ->required(),
-                        Forms\Components\FileUpload::make('image')
+
+                        FileUpload::make('image')
                             ->image(),
-                        Forms\Components\Toggle::make('published'),
-                        Forms\Components\DateTimePicker::make('published_at'),
+                        Toggle::make('published'),
+
+                        DateTimePicker::make('published_at')
+                        ->visibleJs(<<<'JS'
+                            $get('published')
+                        JS),
                     ])
                         ->grow(false)
                         ->extraAttributes(['style' => 'min-width: 350px']),
                 ]),
             ]);
+    }
+
+    public static function infolist(Schema $infolist): Schema
+    {
+        return $infolist->schema([
+            TextEntry::make('title')
+        ]);
     }
 
     public static function table(Table $table): Table

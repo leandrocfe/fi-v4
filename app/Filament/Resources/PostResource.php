@@ -129,7 +129,7 @@ class PostResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('published')
             ])
             ->actions([
                 Actions\ViewAction::make(),
